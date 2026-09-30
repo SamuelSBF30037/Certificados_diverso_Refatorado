@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro Automático de Cursos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <img src="icons/icon48.png" alt="Logo" class="app-logo">
+      <h1>Cadastro Automático de Cursos</h1>
+    </header>
+
+    <div class="stepper">
+      <div class="step" data-step="upload">
+        <div class="step-number">1</div>
+        <div class="step-label">Upload</div>
+      </div>
+      <div class="step" data-step="config">
+        <div class="step-number">2</div>
+        <div class="step-label">Configuração</div>
+      </div>
+      <div class="step" data-step="run">
+        <div class="step-number">3</div>
+        <div class="step-label">Execução</div>
+      </div>
+    </div>
+
+    <main class="app-content">
+      <!-- Etapa 1: Upload -->
+      <section id="upload" class="section-panel active">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Selecione seu arquivo</h2>
+          </div>
+          <div class="panel-body">
+            <div class="file-upload-container">
+              <div class="file-upload-area" id="dropArea">
+                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </svg>
+                <h3>Arraste seu arquivo aqui</h3>
+                <p>ou</p>
+                <label for="fileInput" class="button primary">Escolher arquivo</label>
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
+              </div>
+            </div>
+            <div id="filePreview" class="file-preview hidden">
+              <div class="file-info">
+                <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/>
+                </svg>
+                <div class="file-details">
+                  <h4 id="fileName">arquivo.xlsx</h4>
+                  <p id="fileSize">128 KB</p>
+                  <div class="chip" id="recordCount">120 registros</div>
+                </div>
+              </div>
+              <div class="preview-actions">
+                <button id="viewDataBtn" class="button secondary">Visualizar dados</button>
+                <button id="cancelFileBtn" class="button text">Cancelar</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <button id="loadFileBtn" class="button primary" disabled>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Etapa 2: Configuração -->
+      <section id="config" class="section-panel">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Configurações</h2>
+          </div>
+          <div class="panel-body">
+            <div class="settings-container">
+              <!-- NOVA SEÇÃO: Intervalo de registros -->
+              <div class="setting-group">
+                <h3>Intervalo de Registros</h3>
+                <div class="setting-item">
+                  <label for="linhaInicial">
+                    Linha inicial
+                    <div class="tooltip">
+                      <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                      </svg>
+                      <span class="tooltip-text">A partir de qual registro começar o processamento (iniciando em 1)</span>
+                    </div>
+                  </label>
+                  <input type="number" id="linhaInicial" class="form-input" value="1" min="1">
+                </div>
+                <div class="setting-item">
+                  <label for="linhaFinal">
+                    Linha final
+                    <div class="tooltip">
+                      <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                      </svg>
+                      <span class="tooltip-text">Até qual registro processar (0 = todos)</span>
+                    </div>
+                  </label>
+                  <input type="number" id="linhaFinal" class="form-input" value="0" min="0">
+                </div>
+                <div class="setting-item">
+                  <div class="status-box" id="intervaloStatus">
+                    <p>Total a processar: <span id="totalProcessar">Todos os registros</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-group">
+                <h3>Tempos de espera</h3>
+                <div class="setting-item">
+                  <label for="waitTimeSearch">
+                    Tempo após pesquisa de RG
+                    <div class="tooltip">
+                      <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                      </svg>
+                      <span class="tooltip-text">Tempo de espera depois de inserir o RG e antes de preencher os campos</span>
+                    </div>
+                  </label>
+                  <div class="range-control">
+                    <input type="range" id="waitTimeSearch" min="1" max="20" value="5">
+                    <div class="range-value">
+                      <output for="waitTimeSearch" id="waitTimeSearchValue">5</output> segundos
+                    </div>
+                  </div>
+                </div>
+                <div class="setting-item">
+                  <label for="waitTimeAfterSubmit">
+                    Tempo após clicar em Incluir
+                    <div class="tooltip">
+                      <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                      </svg>
+                      <span class="tooltip-text">Tempo de espera após clicar no botão Incluir e antes de seguir para o próximo registro</span>
+                    </div>
+                  </label>
+                  <div class="range-control">
+                    <input type="range" id="waitTimeAfterSubmit" min="1" max="20" value="3">
+                    <div class="range-value">
+                      <output for="waitTimeAfterSubmit" id="waitTimeAfterSubmitValue">3</output> segundos
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="setting-group">
+                <h3>Texto Complementar</h3>
+                <div class="setting-item">
+                  <label for="comandante">Nome do Comandante</label>
+                  <input type="text" id="comandante" class="form-input" placeholder="Ex: DANIEL PIRES ALEIXO - CORONEL QOPM">
+                  <p class="setting-description">Este texto será adicionado após o texto da planilha</p>
+                </div>
+                <div class="setting-item">
+                  <label for="comandanteCargo">Cargo do Comandante</label>
+                  <input type="text" id="comandanteCargo" class="form-input" placeholder="Ex: Comandante da Academia de Polícia Militar">
+                  <p class="setting-description">Cargo que será exibido junto com o nome do comandante</p>
+                </div>
+                <div class="setting-item">
+                  <label for="processoSEI">Número do Processo SEI</label>
+                  <input type="text" id="processoSEI" class="form-input" placeholder="Ex: 202500002046904">
+                  <p class="setting-description">Será formatado como "Processo SEI nº [número]"</p>
+                </div>
+                <div class="setting-item">
+                  <label for="iniciais">Iniciais</label>
+                  <input type="text" id="iniciais" class="form-input" maxlength="5" placeholder="Ex: RNMM">
+                  <p class="setting-description">Até 5 caracteres, adicionados ao final do texto</p>
+                </div>
+                <div class="setting-item">
+                  <label for="previewTextoComplementar">Visualização do resultado</label>
+                  <div class="text-preview" id="previewTextoComplementar">
+                    <p class="text-preview-content">O texto complementar será gerado com base nos campos acima e no texto da planilha.</p>
+                  </div>
+                  <button id="testarTextoBtn" class="button secondary">Testar com exemplo</button>
+                </div>
+              </div>
+              
+              <div class="setting-group">
+                <h3>Comportamento</h3>
+                <!-- NOVA OPÇÃO: Modo de teste -->
+                <div class="setting-item checkbox">
+                  <div class="switch">
+                    <input type="checkbox" id="modoTeste" checked>
+                    <label for="modoTeste">
+                      <span class="slider"></span>
+                      <span class="label-text">Modo de teste (processa apenas 1 registro e pausa)</span>
+                    </label>
+                  </div>
+                  <p class="setting-description">Execute apenas um registro para verificar o funcionamento antes de continuar com todo o lote</p>
+                </div>
+                <!-- NOVA OPÇÃO: Debug detalhado -->
+                <div class="setting-item checkbox">
+                  <div class="switch">
+                    <input type="checkbox" id="debugDetalhado" checked>
+                    <label for="debugDetalhado">
+                      <span class="slider"></span>
+                      <span class="label-text">Debug detalhado</span>
+                    </label>
+                  </div>
+                  <p class="setting-description">Apresenta logs com informações detalhadas de cada passo da execução</p>
+                </div>
+                <div class="setting-item checkbox">
+                  <div class="switch">
+                    <input type="checkbox" id="autoClick" checked>
+                    <label for="autoClick">
+                      <span class="slider"></span>
+                      <span class="label-text">Clicar automaticamente em Incluir</span>
+                    </label>
+                  </div>
+                  <p class="setting-description">Se desativado, você precisará clicar manualmente no botão para cada registro</p>
+                </div>
+                <div class="setting-item checkbox">
+                  <div class="switch">
+                    <input type="checkbox" id="continueOnError" checked>
+                    <label for="continueOnError">
+                      <span class="slider"></span>
+                      <span class="label-text">Continuar em caso de erro</span>
+                    </label>
+                  </div>
+                  <p class="setting-description">Se desativado, o processamento irá parar ao encontrar o primeiro erro</p>
+                </div>
+                <div class="setting-item checkbox">
+                  <div class="switch">
+                    <input type="checkbox" id="camposOpcionais" checked>
+                    <label for="camposOpcionais">
+                      <span class="slider"></span>
+                      <span class="label-text">Tratar Menção/Nota/Classificação como opcionais</span>
+                    </label>
+                  </div>
+                  <p class="setting-description">Se ativado, o processamento continuará mesmo que estes campos estejam vazios na planilha</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer actions-container">
+            <button id="backToUploadBtn" class="button text">Voltar</button>
+            <div>
+              <button id="saveConfigBtn" class="button secondary">Salvar configurações</button>
+              <button id="continueToRunBtn" class="button primary">Continuar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Etapa 3: Execução -->
+      <section id="run" class="section-panel">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Executando cadastramento</h2>
+          </div>
+          <div class="panel-body">
+            <div class="stats-container">
+              <div class="stat-card">
+                <div class="stat-icon success">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-value" id="successRecords">0</div>
+                  <div class="stat-label">Sucesso</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon error">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-value" id="failedRecords">0</div>
+                  <div class="stat-label">Falhas</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon pending">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-value" id="pendingRecords">0</div>
+                  <div class="stat-label">Pendentes</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon total">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-value" id="totalRecords">0</div>
+                  <div class="stat-label">Total</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="current-record-container">
+              <div class="record-progress">
+                <div class="record-counter">
+                  <span id="currentRecordIndex">0</span>/<span id="totalRecordCount">0</span>
+                </div>
+                <div class="progress-bar">
+                  <div id="progressBar" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div id="currentRecord" class="current-record-details">
+                <div class="record-detail">
+                  <span class="detail-label">RG:</span>
+                  <span class="detail-value" id="currentRG">-</span>
+                </div>
+                <div class="record-detail">
+                  <span class="detail-label">Nome do Curso:</span>
+                  <span class="detail-value" id="currentCourse">-</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- NOVA SEÇÃO: Progress Steps (Etapas detalhadas) -->
+            <div class="detailed-progress-container">
+              <h4>Etapas de processamento</h4>
+              <div class="progress-steps" id="progressSteps">
+                <div class="progress-step waiting" data-step="prepare">
+                  <div class="step-status"></div>
+                  <div class="step-text">Preparação</div>
+                </div>
+                <div class="progress-step waiting" data-step="insertRG">
+                  <div class="step-status"></div>
+                  <div class="step-text">Inserir RG</div>
+                </div>
+                <div class="progress-step waiting" data-step="search">
+                  <div class="step-status"></div>
+                  <div class="step-text">Pesquisar</div>
+                </div>
+                <div class="progress-step waiting" data-step="fill">
+                  <div class="step-status"></div>
+                  <div class="step-text">Preencher Campos</div>
+                </div>
+                <div class="progress-step waiting" data-step="submit">
+                  <div class="step-status"></div>
+                  <div class="step-text">Enviar Formulário</div>
+                </div>
+                <div class="progress-step waiting" data-step="check">
+                  <div class="step-status"></div>
+                  <div class="step-text">Verificar Resultado</div>
+                </div>
+              </div>
+            </div>
+            
+            <div id="logs" class="logs-container">
+              <!-- O conteúdo dos logs será preenchido dinamicamente via JavaScript -->
+            </div>
+            
+            <!-- NOVO COMPONENTE: Modal de Confirmação após Modo de Teste -->
+            <div id="testeModoModal" class="modal">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2>Modo de Teste Concluído</h2>
+                </div>
+                <div class="modal-body">
+                  <p>O primeiro registro foi processado em modo de teste.</p>
+                  <p>Deseja continuar com o processamento dos registros restantes?</p>
+                </div>
+                <div class="modal-footer">
+                  <button id="continueProcessingBtn" class="button primary">Continuar</button>
+                  <button id="stopTestModeBtn" class="button secondary">Ajustar Configurações</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <div class="process-controls">
+              <button id="backToConfigBtn" class="button text">Voltar</button>
+              <div class="action-buttons">
+                <button id="exportLogBtn" class="button secondary">
+                  <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                  </svg>
+                  Exportar Relatório
+                </button>
+                <button id="startBtn" class="button primary">
+                  <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7L8 5z"/>
+                  </svg>
+                  Iniciar
+                </button>
+                <button id="pauseBtn" class="button primary" disabled>
+                  <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                  </svg>
+                  Pausar
+                </button>
+                <button id="stopBtn" class="button danger" disabled>
+                  <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M6 6h12v12H6V6z"/>
+                  </svg>
+                  Parar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal para visualização de dados -->
+    <div id="dataPreviewModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Visualização dos dados</h2>
+          <button class="close-button" id="closeModalBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="data-table-container">
+            <table id="dataPreviewTable" class="data-table">
+              <thead>
+                <tr>
+                  <th>RG</th>
+                  <th>Tipo Curso</th>
+                  <th>Nome Curso</th>
+                  <th>Local</th>
+                  <th>Carga Horária</th>
+                  <th>Menção</th>
+                  <th>Nota</th>
+                  <th>Classificação</th>
+                  <th>Texto Complementar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dados da tabela serão inseridos aqui via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="confirmDataBtn" class="button primary">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="lib/xlsx.full.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

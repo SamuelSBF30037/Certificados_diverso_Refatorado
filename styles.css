@@ -1,0 +1,1311 @@
+/* RESET E VARIÁVEIS */
+:root {
+  --primary-color: #1e88e5;
+  --primary-light: #e3f2fd;
+  --primary-dark: #0d47a1;
+  --secondary-color: #546e7a;
+  --success-color: #4caf50;
+  --error-color: #f44336;
+  --warning-color: #ff9800;
+  --info-color: #2196f3;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #eeeeee;
+  --gray-300: #e0e0e0;
+  --gray-400: #bdbdbd;
+  --gray-500: #9e9e9e;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  --border-radius: 8px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.2s ease-in-out;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10px;
+  line-height: 0.9;
+  color: var(--gray-800);
+  background-color: var(--gray-100);
+  width: 700px;
+  max-width: 100%;
+  overflow-x: hidden;
+  right: 0;
+}
+
+/* LAYOUT BASE */
+.app-container {
+  right:0;
+  display: flex;
+  flex-direction: column;
+  min-height: 1100px;
+  height:900px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.app-logo {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+}
+
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.app-content {
+  flex: 1;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* STEPPER */
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.stepper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50px;
+  right: 50px;
+  height: 2px;
+  background-color: var(--gray-300);
+  z-index: -1;
+  transform: translateY(-50%);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--gray-300);
+  color: var(--gray-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 4px;
+  transition: var(--transition);
+}
+
+.step-label {
+  font-size: 12px;
+  color: var(--gray-600);
+  transition: var(--transition);
+}
+
+.step.active .step-number,
+.step.completed .step-number {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.step.active .step-label,
+.step.completed .step-label {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.step.completed .step-number::after {
+  content: '✓';
+}
+
+/* PAINÉIS */
+.section-panel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  padding: 16px;
+}
+
+.section-panel.active {
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 5;
+}
+
+.panel {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.panel-header h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--gray-800);
+}
+
+.panel-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.panel-footer {
+  padding: 16px;
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* BOTÕES */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.button.primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.button.secondary {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.button.secondary:hover {
+  background-color: var(--primary-light);
+}
+
+.button.text {
+  background-color: transparent;
+  color: var(--gray-700);
+}
+
+.button.text:hover {
+  background-color: var(--gray-100);
+}
+
+.button.danger {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.button.danger:hover {
+  background-color: #d32f2f;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* UPLOAD ÁREA */
+.file-upload-container {
+  padding: 20px 0;
+}
+
+.file-upload-area {
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 32px;
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.file-upload-area:hover {
+  border-color: var(--primary-color);
+  background-color: var(--primary-light);
+}
+
+.file-upload-area.dragover {
+  border-color: var(--primary-color);
+  background-color: var(--primary-light);
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  fill: var(--gray-500);
+}
+
+.file-upload-area:hover .upload-icon {
+  fill: var(--primary-color);
+}
+
+.file-upload-area h3 {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.file-upload-area p {
+  margin-bottom: 16px;
+  color: var(--gray-600);
+}
+
+/* VISUALIZAÇÃO DO ARQUIVO */
+.file-preview {
+  margin-top: 24px;
+  background-color: var(--gray-50);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+}
+
+.file-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 16px;
+  fill: var(--primary-color);
+}
+
+.file-details h4 {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--gray-800);
+}
+
+.file-details p {
+  color: var(--gray-600);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.chip {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.preview-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* CONFIGURAÇÕES */
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.setting-group {
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: 24px;
+}
+
+.setting-group h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: var(--gray-700);
+}
+
+.setting-item {
+  margin-bottom: 16px;
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--gray-800);
+}
+
+.range-control {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.range-control input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  background: var(--gray-300);
+  border-radius: 10px;
+  outline: none;
+}
+
+.range-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.range-value {
+  min-width: 80px;
+  color: var(--gray-700);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  margin-left: 8px;
+}
+
+.info-icon {
+  width: 16px;
+  height: 16px;
+  fill: var(--gray-500);
+  cursor: help;
+}
+
+.tooltip-text {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--gray-800);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  width: 200px;
+  font-size: 12px;
+  font-weight: normal;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.switch input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.switch label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 0;
+}
+
+.slider {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: var(--gray-300);
+  border-radius: 10px;
+  margin-right: 12px;
+  transition: var(--transition);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+input:checked + label .slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + label .slider:before {
+  transform: translateX(16px);
+}
+
+.setting-description {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--gray-600);
+  padding-left: 0;
+}
+
+.setting-item.checkbox .setting-description {
+  padding-left: 48px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.form-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.text-preview {
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.text-preview-content {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gray-800);
+  white-space: pre-wrap;
+}
+
+/* EXECUÇÃO */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.stat-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+.stat-icon.success {
+  background-color: var(--success-color);
+}
+
+.stat-icon.error {
+  background-color: var(--error-color);
+}
+
+.stat-icon.pending {
+  background-color: var(--warning-color);
+}
+
+.stat-icon.total {
+  background-color: var(--info-color);
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+.current-record-container {
+  background-color: var(--gray-50);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.record-progress {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.record-counter {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: var(--gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.current-record-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.record-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: var(--gray-600);
+  margin-bottom: 2px;
+}
+
+.detail-value {
+  font-weight: 500;
+}
+
+.logs-container {
+  background-color: var(--gray-50);
+  border-radius: var(--border-radius);
+  padding: 8px;
+  height: 150px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.log-entry {
+  padding: 4px 8px;
+  display: flex;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-time {
+  color: var(--gray-600);
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.log-message {
+  flex: 1;
+}
+
+.log-entry.success .log-message {
+  color: var(--success-color);
+}
+
+.log-entry.error .log-message {
+  color: var(--error-color);
+}
+
+.log-entry.warning .log-message {
+  color: var(--warning-color);
+}
+
+.process-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* TABELA DE VISUALIZAÇÃO */
+.data-table-container {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0 -16px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.data-table th {
+  background-color: var(--gray-50);
+  font-weight: 500;
+  color: var(--gray-700);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.data-table tbody tr:hover {
+  background-color: var(--primary-light);
+}
+
+.data-table td {
+  font-size: 12px;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--gray-600);
+}
+
+.modal-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 16px;
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* HELPERS */
+.hidden {
+  display: none !important;
+}
+
+/* Novos estilos para as funcionalidades adicionadas */
+
+/* Status box para intervalo de registros */
+.status-box {
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.status-box p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gray-700);
+}
+
+/* Etapas detalhadas de progresso */
+.detailed-progress-container {
+  margin: 16px 0;
+}
+
+.detailed-progress-container h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--gray-700);
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--gray-100);
+  padding: 16px;
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 16%;
+}
+
+.progress-step::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: var(--gray-300);
+  z-index: 0;
+}
+
+.progress-step:last-child::after {
+  display: none;
+}
+
+.step-status {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--gray-300);
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-text {
+  font-size: 12px;
+  text-align: center;
+  color: var(--gray-600);
+}
+
+/* Estados dos steps */
+.progress-step.waiting .step-status {
+  background-color: var(--gray-300);
+}
+
+.progress-step.active .step-status {
+  background-color: var(--info-color);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+}
+
+.progress-step.active .step-text {
+  color: var(--info-color);
+  font-weight: 500;
+}
+
+.progress-step.success .step-status {
+  background-color: var(--success-color);
+}
+
+.progress-step.success .step-status::after {
+  content: '✓';
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.progress-step.success .step-text {
+  color: var(--success-color);
+}
+
+.progress-step.error .step-status {
+  background-color: var(--error-color);
+}
+
+.progress-step.error .step-status::after {
+  content: '!';
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.progress-step.error .step-text {
+  color: var(--error-color);
+}
+
+/* Modal de confirmação após modo de teste */
+#testeModoModal .modal-content {
+  max-width: 400px;
+}
+
+#testeModoModal .modal-body {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+#testeModoModal .modal-body p {
+  margin-bottom: 16px;
+}
+
+#testeModoModal .modal-footer {
+  justify-content: center;
+}
+
+#testeModoModal .modal-footer button {
+  margin: 0 8px;
+}
+
+/* Animações para elementos de progresso */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.progress-step.active .step-status {
+  animation: pulse 1.5s infinite;
+}
+
+/* Ajustes responsivos para etapas de progresso em telas menores */
+@media (max-width: 480px) {
+  .progress-steps {
+    flex-wrap: wrap;
+  }
+  
+  .progress-step {
+    width: 30%;
+    margin-bottom: 16px;
+  }
+  
+  .progress-step::after {
+    display: none;
+  }
+}
+
+/* Estado de pré-visualização da linha selecionada */
+.selected-row {
+  background-color: var(--primary-light) !important;
+  font-weight: 500;
+}
+
+/* Cores específicas para tipos de log */
+.log-entry.debug {
+  color: var(--gray-600);
+}
+
+.log-entry.info {
+  color: var(--info-color);
+}
+
+/* Novos estilos para as funcionalidades adicionadas */
+
+/* Status box para intervalo de registros */
+.status-box {
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.status-box p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gray-700);
+}
+
+/* Etapas detalhadas de progresso */
+.detailed-progress-container {
+  margin: 16px 0;
+}
+
+.detailed-progress-container h4 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--gray-700);
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--gray-100);
+  padding: 16px;
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 16%;
+}
+
+.progress-step::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: var(--gray-300);
+  z-index: 0;
+}
+
+.progress-step:last-child::after {
+  display: none;
+}
+
+.step-status {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--gray-300);
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-text {
+  font-size: 12px;
+  text-align: center;
+  color: var(--gray-600);
+}
+
+/* Estados dos steps */
+.progress-step.waiting .step-status {
+  background-color: var(--gray-300);
+}
+
+.progress-step.active .step-status {
+  background-color: var(--info-color);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+}
+
+.progress-step.active .step-text {
+  color: var(--info-color);
+  font-weight: 500;
+}
+
+.progress-step.success .step-status {
+  background-color: var(--success-color);
+}
+
+.progress-step.success .step-status::after {
+  content: '✓';
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.progress-step.success .step-text {
+  color: var(--success-color);
+}
+
+.progress-step.error .step-status {
+  background-color: var(--error-color);
+}
+
+.progress-step.error .step-status::after {
+  content: '!';
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.progress-step.error .step-text {
+  color: var(--error-color);
+}
+
+/* Modal de confirmação após modo de teste */
+#testeModoModal .modal-content {
+  max-width: 400px;
+}
+
+#testeModoModal .modal-body {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+#testeModoModal .modal-body p {
+  margin-bottom: 16px;
+}
+
+#testeModoModal .modal-footer {
+  justify-content: center;
+}
+
+#testeModoModal .modal-footer button {
+  margin: 0 8px;
+}
+
+/* Animações para elementos de progresso */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.progress-step.active .step-status {
+  animation: pulse 1.5s infinite;
+}
+
+/* Ajustes responsivos para etapas de progresso em telas menores */
+@media (max-width: 480px) {
+  .progress-steps {
+    flex-wrap: wrap;
+  }
+  
+  .progress-step {
+    width: 30%;
+    margin-bottom: 16px;
+  }
+  
+  .progress-step::after {
+    display: none;
+  }
+}
+
+/* Estado de pré-visualização da linha selecionada */
+.selected-row {
+  background-color: var(--primary-light) !important;
+  font-weight: 500;
+}
+
+/* Cores específicas para tipos de log */
+.log-entry.debug {
+  color: var(--gray-600);
+}
+
+.log-entry.info {
+  color: var(--info-color);
+}
+
+/* CORREÇÕES PARA PROBLEMAS DE MODAL */
+.modal.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+  z-index: 2000 !important;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0) !important;
+  max-height: 90vh !important;
+}
+
+/* Garantir que a tabela de visualização esteja visível */
+.data-table-container {
+  overflow-y: auto !important;
+  max-height: 70vh !important;
+}
+
+/* Correção para persistência de estados */
+.app-container {
+  min-height: 600px !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Melhorias visuais para logs */
+.logs-container {
+  height: 200px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  font-family: monospace !important;
+  border: 1px solid var(--gray-300) !important;
+  background-color: var(--gray-50) !important;
+}
+
+.log-entry {
+  padding: 4px 8px !important;
+  border-bottom: 1px solid var(--gray-200) !important;
+  font-size: 12px !important;
+}
+
+/* Melhoria da visualização de estatísticas */
+.stat-card {
+  box-shadow: var(--shadow-sm) !important;
+  transition: var(--transition) !important;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px) !important;
+}
